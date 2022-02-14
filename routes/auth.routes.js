@@ -79,7 +79,7 @@ router.get('/profile', (req, res) => {
 	.catch((err)=>console.log(err));
 });
 
-router.get("/logout", ()=>{
+router.get("/logout", (req, res)=>{
 	req.session.destroy((err)=>{
 		res.redirect("/");
 	});
