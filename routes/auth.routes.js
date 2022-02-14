@@ -18,13 +18,13 @@ router.route('/signup')
 
 	User.find({username})
 	.then(user=>{
-		if(user){res.render("signup", {errorMessage: "User already taken!"})}
+		if(user){res.render("signup", {errorMessage: "User already taken!"})};
 		
-		const salt = bcrypt.genSaltSync(saltRounds)
-		const password = bcrypt.hashSync(password, salt)
+		const salt = bcrypt.genSaltSync(saltRounds);
+		password = bcrypt.hashSync(password, salt);
 		//const hashedPwd = bcrypt.hashSync(password, salt)
 
-		User.create({username, password})
+		User.create({username, password});
 		//User.create({username, password: hashedPwd})
 	})
 
