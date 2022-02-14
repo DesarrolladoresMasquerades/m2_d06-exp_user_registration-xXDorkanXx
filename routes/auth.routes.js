@@ -16,18 +16,27 @@ router.route('/signup')
 	// Check the form is NOT empty
 	if(!username || !password) res.render("signup", {errorMessage: "All filds are required"});
 
-	User.find({username})
+	User.findOne({username})
 	.then(user=>{
-		if(user){res.render("signup", {errorMessage: "User already taken!"})};
+		if(user && user.username){
+			console.log("The user is: ", user);
+			throw new Error("User already taken!")
+		};
 		
 		const salt = bcrypt.genSaltSync(saltRounds);
 		password = bcrypt.hashSync(password, salt);
 		//const hashedPwd = bcrypt.hashSync(password, salt)
 
-		User.create({username, password});
+		User.create({username, password})
 		//User.create({username, password: hashedPwd})
+		.then(()=>{res.redirect("/")})
+		.catch((err)=>{
+			console.log(err);
+			res.redirect("/auth/signup")})
 	})
-
+	.catch((err)=>{
+		res.render("signup", {errorMessage: err});
+	})
 });
 
 router.get('/login', (req, res) => {
