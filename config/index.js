@@ -15,14 +15,14 @@ module.exports = (app) => {
 
   app.use(session({
     secret: process.env.COOKIE_SECRET, // for example: HdfSgsfgv2453WDfv2!"·!%cr"fg
+    saveUninitialized: false,
+    resave: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI, // || "mongodb://localhost/cookies"
+      ttl: 24 * 60 * 60
+    }),
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, //one day old
-      saveUninitialized: false,
-      resave: false,
-      store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI, // || "mongodb://localhost/cookies"
-        ttl: 24 * 60 * 60
-      })
     }
   }))
 

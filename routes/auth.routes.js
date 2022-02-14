@@ -3,6 +3,7 @@ const User = require('../models/User.model');
 const router = express.Router();
 const saltRounds = 5;
 const bcrypt = require('bcrypt');
+const res = require('express/lib/response');
 
 router.route('/signup')
 .get((req, res) => {
@@ -58,8 +59,8 @@ router.route("/login")
 
 		const isPwdCorrect = bcrypt.compareSync(password, user.password);
 		if(isPwdCorrect){
-			//res.redirect("/auth/profile");
-			res.render("login", { errorMessage: "You are correctly logged in!" })
+			req.session.currentUserId = user._id;
+			res.redirect("/auth/profile");
 		}else{
 			throw new Error("Incorrect credentials!");
 		}
@@ -72,7 +73,16 @@ router.route("/login")
 
 
 router.get('/profile', (req, res) => {
-	res.render('profile');
+	const id = req.session.currentUserId;
+	User.findById(id)
+	.then((user)=>res.render("profile", user))
+	.catch((err)=>console.log(err));
 });
+
+router.get("/logout", ()=>{
+	req.session.destroy((err)=>{
+		res.redirect("/");
+	});
+})
 
 module.exports = router;
