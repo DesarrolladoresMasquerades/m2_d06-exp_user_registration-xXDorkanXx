@@ -14,7 +14,7 @@ router.route('/signup')
 	//const password = req.body.password;
 
 	// Check the form is NOT empty
-	if(!username || !password) res.render("signup", {errorMessage: "All filds are required"});
+	if(!username || !password) res.render("signup", {errorMessage: "All fields are required"});
 
 	User.findOne({username})
 	.then(user=>{
@@ -37,9 +37,39 @@ router.route('/signup')
 	})
 });
 
-router.get('/login', (req, res) => {
-	res.render('login');
+router.route("/login")
+.get((req, res) => {
+  res.render("login");
+})
+.post((req, res)=>{
+	const username = req.body.username;
+	let password = req.body.password;
+
+	if (!username || !password) {
+		res.render("login", { errorMessage: "All fields are required" });
+		throw new Error("Validation error");
+	}
+
+	User.findOne({username})
+	.then(user=>{
+		if(!user){
+			throw new Error("Incorrect credentials!");
+		}
+
+		const isPwdCorrect = bcrypt.compareSync(password, user.password);
+		if(isPwdCorrect){
+			//res.redirect("/auth/profile");
+			res.render("login", { errorMessage: "You are correctly logged in!" })
+		}else{
+			throw new Error("Incorrect credentials!");
+		}
+	})
+	.catch((err)=>{
+		res.render("login", {errorMessage: err});
+	})
+	
 });
+
 
 router.get('/profile', (req, res) => {
 	res.render('profile');
