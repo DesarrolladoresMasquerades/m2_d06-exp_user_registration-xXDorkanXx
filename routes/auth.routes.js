@@ -25,10 +25,8 @@ router.route('/signup')
 		
 		const salt = bcrypt.genSaltSync(saltRounds);
 		password = bcrypt.hashSync(password, salt);
-		//const hashedPwd = bcrypt.hashSync(password, salt)
 
 		User.create({username, password})
-		//User.create({username, password: hashedPwd})
 		.then(()=>{res.redirect("/")})
 		.catch((err)=>{
 			console.log(err);
