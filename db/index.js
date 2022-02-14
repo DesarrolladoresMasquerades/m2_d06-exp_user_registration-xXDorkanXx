@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost/express-basic-auth";
+const MONGO_URI = `${process.env.MONGODB_URI}`;
 
 mongoose
   .connect(MONGO_URI, {
